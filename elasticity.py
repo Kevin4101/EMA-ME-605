@@ -1,5 +1,5 @@
 """
-Tutorial program for ME/EMA 605. Modified from the corresponding FEnicCS tutorial demo program.
+Tutorial program for ME/EMA 605. Modified from the corresponding FEniCS tutorial demo program.
 
 Linear elasticity problem in 2D/3D.
 
