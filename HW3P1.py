@@ -1,12 +1,5 @@
 """
-Tutorial program for ME/EMA 605. Modified from the corresponding FEniCS tutorial demo program.
-
-Linear elasticity problem in 2D/3D.
-
-   div(sigma) + f = 0 
-   
-The model is used to simulate a 2D/3D elastic beam clamped at
-its left end and deformed under its own weight (non-zero forcing function f).
+Condition Set 1
 """
 
 #include FEniCS headers
@@ -16,42 +9,41 @@ from ufl import nabla_div, nabla_grad, div
 
 #Problem parameters variables
 L = 1;   #Beam length
-W = 0.2; #Beam width and Height 
-mu = 1; #Lame parameters
-lambda_=1.25; #Lame parameters
-rho = 1.0e-2; #density  
+W = ([0,0.03]x[0,0.08]); #Beam width and Height 
 delta = W/L
 g = 1.0; #gravity constant for forcing function
 
 #Create mesh
 #The points represent the diagonal ends of the box, followed by the number of elments along each dimension
-mesh = RectangleMesh(Point(0, 0), Point(L, W), 10, 3) #2D mesh
+mesh = RectangleMesh(Point(0, 0), Point(L, W), 30, 80) #2D mesh
 #mesh = BoxMesh(Point(0, 0, 0), Point(L, W, W), 10, 3, 3) #3D mesh
 
 #Define function space.
 #This creates a H1 function space from which we can construct the solution (trail) and test function spaces.
-V = VectorFunctionSpace(mesh, 'P', 1)
+V = FunctionSpace(mesh, 'P', 1)
 
 # Define needed u (trial space), w (test space) function spaces
 u = TrialFunction(V)
 w = TestFunction(V)
 
 # Define boundary condition
-tol = 1E-14 #tolerance
-# Define function to identify the left boundary that is clamped
-def clamped_boundary(x, on_boundary):
-    return on_boundary and x[0] < tol
+g1 = 300
+g2 = 310
+
+# Define function to identify bottom boundary
+def bot_boundary(y=0,on_boundary):
+   return on_boundary
+# Define function to identify top boundary
+def top_boundary(y=0.08,on_boundary):
+   return on_boundary
+
 # Create the boundary condition
-bc = DirichletBC(V, Constant((0, 0)), clamped_boundary) #2D
+bc1 = DirichletBC(V, g1, bot_boundary) #2D
+bc2 = DirichletBC(V, g2, top_boundary) #2D
 #bc = DirichletBC(V, Constant((0, 0, 0)), clamped_boundary) #3D
 
-# Define expressions for strain and stress
-#strain
-def epsilon(u):
-    return 0.5*(nabla_grad(u) + nabla_grad(u).T)
-#stress (St.Venant Kirchhoff model)
-def sigma(u):
-    return lambda_*nabla_div(u)*Identity(d) + 2*mu*epsilon(u)
+# Define initial value
+u_n = 
 
 # Define other needed constants
 d = u.geometric_dimension()  # space dimension
