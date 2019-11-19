@@ -10,7 +10,7 @@ from ufl import nabla_div, nabla_grad, div
 #Problem parameters variables
 L = 1;   #Beam length
 W = ([0,0.03]x[0,0.08]); #Beam width and Height 
-delta = W/L
+dx = W/L
 g = 1.0; #gravity constant for forcing function
 
 #Create mesh
@@ -43,7 +43,7 @@ bc2 = DirichletBC(V, g2, top_boundary) #2D
 #bc = DirichletBC(V, Constant((0, 0, 0)), clamped_boundary) #3D
 
 # Define initial value
-u_n = 
+u_n = interpolate(g1,V)
 
 # Define other needed constants
 d = u.geometric_dimension()  # space dimension
@@ -53,8 +53,7 @@ T = Constant((0, 0))         #traction (Neumann B.C) in 2D
 #T = Constant((0, 0, 0))      #traction (Neumann B.C) in 3D
 
 #Define the weak form of the problem
-a = inner(sigma(u), epsilon(w))*dx #LHS of the weak form
-L = dot(f, w)*dx + dot(T, w)*ds    #RHS of the weak form
+F = u*v*dx - u_n*v*dx
 
 # Compute solution by solving the weak formulation
 u = Function(V)
